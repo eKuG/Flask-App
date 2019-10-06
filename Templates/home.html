@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link href="https://fonts.googleapis.com/css?family=Roboto+Condensed:300,300i,400,400i,700i" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="https://js.api.here.com/v3/3.0/mapsjs-ui.css?dp-version=1549984893" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='home.css')}}">
+  <title>Document</title>
+</head>
+<body>
+  <body>
+    <nav class="menu-activea">
+  <h1>NAVBAR</h1>
+  <ul>
+    <li>HOME</li>
+    <li>GALLERY</li>
+    <li>TEAM</li>                                       
+    <li>SERVICES</li>
+    <li>ABOUT</li>
+    <li>WORK</li>
+    <li>FAQ</li>
+  </ul>
+</nav>
+<main>
+  <section>
+   <br><br><br>
+    <h1> ABOUT </h1>
+    <br>
+    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+     
+    
+    <p>Quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+     <br<br><br>
+     <h1>ABOUT</h1>
+      <br>
+      <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. A rerum eveniet illum, aliquam, voluptate sunt facere quasi ipsum eum fugiat officia? Placeat, quam iste! Dolorum cupiditate fugiat alias non quae?</p>
+
+      <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Ipsam alias beatae laborum aperiam voluptatibus enim hic commodi natus corporis? Officiis voluptas nesciunt unde. Cum reprehenderit, explicabo velit aliquam illo nesciunt?</p>
+    </section>
+
+    <div id="cover">
+      <form method="GET" action="\getData">
+        <div class="tb">
+          <div class="td"><input type="text" placeholder="Search" required></div>
+          <div class="td" id="s-cover">
+            <button type="submit">
+              <div id="s-circle"></div>
+              <span></span>
+            </button>
+          </div>
+        </div>
+      </form>
+    </div> 
+
+
+
+    <div id="map" style="width: 100%; height: 400px; background: grey" />
+  <script  type="text/javascript" charset="UTF-8" >
+    /**
+ * Display clustered markers on a map
+ *
+ * Note that the maps clustering module http://js.api.here.com/v3/3.0/mapsjs-clustering.js
+ * must be loaded to use the Clustering
+
+ * @param {H.Map} map A HERE Map instance within the application
+ * @param {Array.<Object>} data Raw data that contains airports' coordinates
+ */
+function startClustering(map, data) {
+  // First we need to create an array of DataPoint objects,
+  // for the ClusterProvider
+  var dataPoints = data.map(function (item) {
+    return new H.clustering.DataPoint(item.latitude, item.longitude);
+  });
+
+  // Create a clustering provider with custom options for clusterizing the input
+  var clusteredDataProvider = new H.clustering.Provider(dataPoints, {
+    clusteringOptions: {
+      // Maximum radius of the neighbourhood
+      eps: 32,
+      // minimum weight of points required to form a cluster
+      minWeight: 2
+    }
+  });
+
+  // Create a layer tha will consume objects from our clustering provider
+  var clusteringLayer = new H.map.layer.ObjectLayer(clusteredDataProvider);
+
+  // To make objects from clustering provder visible,
+  // we need to add our layer to the map
+  map.addLayer(clusteringLayer);
+}
+
+
+/**
+ * Boilerplate map initialization code starts below:
+ */
+
+// Step 1: initialize communication with the platform
+var platform = new H.service.Platform({
+  app_id: 'vhfhpi4VuCfJfLflWRsN',
+  app_code: 'Q-KcVg9YleeOY42hmB4tQA',
+  useHTTPS: true
+});
+var pixelRatio = window.devicePixelRatio || 1;
+var defaultLayers = platform.createDefaultLayers({
+  tileSize: pixelRatio === 1 ? 256 : 512,
+  ppi: pixelRatio === 1 ? undefined : 320
+});
+
+// Step 2: initialize a map
+var map = new H.Map(document.getElementById('map'), defaultLayers.normal.map, {
+  center: new H.geo.Point(30.789, 33.790),
+  zoom: 2,
+  pixelRatio: pixelRatio
+});
+
+// Step 3: make the map interactive
+// MapEvents enables the event system
+// Behavior implements default interactions for pan/zoom (also on mobile touch environments)
+var behavior = new H.mapevents.Behavior(new H.mapevents.MapEvents(map));
+
+
+// Step 4: create the default UI component, for displaying bubbles
+var ui = H.ui.UI.createDefault(map, defaultLayers);
+
+// Step 5: request a data about airports's coordinates
+jQuery.getJSON('data/airports.json', function (data) {
+  startClustering(map, data);
+});
+</script>
+
+</main>
+
+
+
+  <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+  <script type="text/javascript" src="https://js.api.here.com/v3/3.0/mapsjs-core.js"></script>
+<script type="text/javascript" src="https://js.api.here.com/v3/3.0/mapsjs-service.js"></script>
+<script type="text/javascript" src="https://js.api.here.com/v3/3.0/mapsjs-ui.js"></script>
+<script type="text/javascript" src="https://js.api.here.com/v3/3.0/mapsjs-mapevents.js"></script>
+<script type="text/javascript" src="https://js.api.here.com/v3/3.0/mapsjs-clustering.js"></script>
+  <script type=text/javascript src="{{
+    url_for('static', filename='home.js')}}"></script>
+  
+</body>
+</html>
+
